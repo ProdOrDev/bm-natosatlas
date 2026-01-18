@@ -18,7 +18,6 @@ public class MapScreen extends UIScreen {
     private final MapContext ctx = new MapContext();
     private final MapViewport viewport = new MapViewport();
     private final MapPainter mapPainter = new MapPainter();
-    private final MapOverlayRenderer overlayRenderer = new MapOverlayRenderer();
 
     private UIElementButton settingsButton;
     private UIElementOptionButton dayNightButton;
@@ -113,7 +112,11 @@ public class MapScreen extends UIScreen {
 
         viewport.end();
 
-        overlayRenderer.render(ctx);
+        if (Settings.debugInfo) {
+            mapPainter.drawDebugInfo(ctx);
+        }
+
+        mapPainter.drawFooterBar(ctx);
 
         settingsButton.render(mouseX, mouseY);
         waypointsButton.render(mouseX, mouseY);

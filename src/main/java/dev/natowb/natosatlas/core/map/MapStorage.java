@@ -1,8 +1,8 @@
 package dev.natowb.natosatlas.core.map;
 
-import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.data.NACoord;
 import dev.natowb.natosatlas.core.utils.LogUtil;
+import dev.natowb.natosatlas.core.utils.NAPaths;
 import dev.natowb.natosatlas.core.utils.Profiler;
 
 import javax.imageio.IIOImage;
@@ -26,8 +26,6 @@ public class MapStorage {
     private final BufferedImage reusableImage;
     private final ImageWriter pngWriter;
     private final ImageWriteParam pngParams;
-
-    private boolean directoryCreated = false;
 
     public MapStorage(int layerId) {
         this.layerId = layerId;
@@ -54,38 +52,27 @@ public class MapStorage {
     }
 
     private Path getRegionDirectory() {
-        Path dir = NatosAtlas.get().getWorldRegionDataPath().resolve("layer_" + layerId);
-
-        if (!directoryCreated) {
-            try {
-                Files.createDirectories(dir);
-            } catch (IOException e) {
-                LogUtil.error("RegionStorage", e, "Failed to create region directory {}", dir);
-            }
-            directoryCreated = true;
-        }
-
-        return dir;
+        return NAPaths.getWorldMapStoragePath(layerId);
     }
 
-    public Path getRegionFile(NACoord regionCoord) {
-        return getRegionDirectory().resolve("region_" + regionCoord.x + "_" + regionCoord.z + ".png");
+    public File getRegionFile(NACoord regionCoord) {
+        return getRegionDirectory().resolve("region_" + regionCoord.x + "_" + regionCoord.z + ".png").toFile();
     }
 
     public void saveRegion(NACoord coord, MapRegion region) {
-        RegionSaveWorker.enqueue(this, coord, region);
+        RegionSaveWorker.enqueue(this, coord, region, getRegionFile(coord));
     }
 
 
     public Optional<MapRegion> loadRegion(NACoord coord) {
-        Path file = getRegionFile(coord);
+        File file = getRegionFile(coord);
 
-        if (!Files.exists(file)) {
+        if (!file.exists()) {
             return Optional.empty();
         }
 
         try {
-            BufferedImage img = ImageIO.read(file.toFile());
+            BufferedImage img = ImageIO.read(file);
             if (img == null) {
                 LogUtil.warn("RegionStorage", "Invalid PNG file for region {} at {}", coord, file);
                 return Optional.empty();
@@ -184,9 +171,8 @@ public class MapStorage {
         }
     }
 
-    void saveRegionBlocking(NACoord regionCoord, MapRegion region) {
+    void saveRegionBlocking(NACoord regionCoord, MapRegion region, File file) {
         Profiler p = Profiler.start("saveRegion (" + regionCoord.x + "," + regionCoord.z + ")");
-        Path file = getRegionFile(regionCoord);
 
         try {
             p.mark("setRGB");
@@ -200,7 +186,7 @@ public class MapStorage {
             );
 
             p.mark("open stream");
-            try (ImageOutputStream out = ImageIO.createImageOutputStream(file.toFile())) {
+            try (ImageOutputStream out = ImageIO.createImageOutputStream(file)) {
                 pngWriter.setOutput(out);
                 p.mark("pngWriter.write");
                 pngWriter.write(null, new IIOImage(reusableImage, null, null), pngParams);

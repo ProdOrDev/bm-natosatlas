@@ -4,6 +4,7 @@ import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.data.NACoord;
 import dev.natowb.natosatlas.core.data.NAChunk;
 import dev.natowb.natosatlas.core.settings.Settings;
+import dev.natowb.natosatlas.core.utils.NAPaths;
 import dev.natowb.natosatlas.core.utils.Profiler;
 
 import java.util.*;
@@ -201,9 +202,7 @@ public class MapManager {
 
     public void exportLayers() {
         for (MapLayer layer : layers) {
-            layer.cache().getStorage().exportFullMap(NatosAtlas.get().getWorldDataPath().resolve("layer_" + layer.id() + ".png"));
+            layer.cache().getStorage().exportFullMap(NAPaths.geWorldDataPath().resolve("layer_" + layer.id() + ".png"));
         }
     }
-
-
 }

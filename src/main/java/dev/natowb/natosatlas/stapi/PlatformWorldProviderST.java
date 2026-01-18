@@ -4,6 +4,7 @@ import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.data.*;
 import dev.natowb.natosatlas.core.platform.PlatformWorldProvider;
 import dev.natowb.natosatlas.core.utils.LogUtil;
+import dev.natowb.natosatlas.core.utils.NAPaths;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
@@ -57,9 +58,7 @@ public class PlatformWorldProviderST implements PlatformWorldProvider {
         } else {
             name = mc.world.getProperties().getName();
         }
-
-        File worldDir = NatosAtlas.get().platform.getMinecraftDirectory().resolve("saves/" + name).toFile();
-        return new NAWorldInfo(name, isServer, time, dimension, worldDir);
+        return new NAWorldInfo(name, isServer, time, dimension);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class PlatformWorldProviderST implements PlatformWorldProvider {
 
     @Override
     public void generateExistingChunks() {
-        File regionDir = new File(getWorldInfo().worldDirectory, "region");
+        File regionDir = new File(NAPaths.getWorldSavePath().toFile(), "region");
 
         File[] regionFiles = regionDir.listFiles((dir, name) -> name.endsWith(".mcr"));
         if (regionFiles == null || regionFiles.length == 0) {
@@ -186,7 +185,7 @@ public class PlatformWorldProviderST implements PlatformWorldProvider {
 
     @Override
     public NAChunk getChunkFromDisk(NACoord chunkCoord) {
-        FlattenedWorldChunkLoader chunkLoader = new FlattenedWorldChunkLoader(getWorldInfo().worldDirectory);
+        FlattenedWorldChunkLoader chunkLoader = new FlattenedWorldChunkLoader(NAPaths.getWorldSavePath().toFile());
         Chunk chunk = chunkLoader.loadChunk(mc.world, chunkCoord.x, chunkCoord.z);
 
         NAChunk nac = new NAChunk();

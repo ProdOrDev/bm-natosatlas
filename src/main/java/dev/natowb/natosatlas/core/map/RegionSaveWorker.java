@@ -3,12 +3,14 @@ package dev.natowb.natosatlas.core.map;
 
 import dev.natowb.natosatlas.core.data.NACoord;
 
+import java.io.File;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class RegionSaveWorker {
     private static final BlockingQueue<SaveTask> QUEUE = new LinkedBlockingQueue<>();
     private static volatile boolean running = false;
+
     public static void start() {
         if (running) return;
         running = true;
@@ -17,8 +19,9 @@ public class RegionSaveWorker {
             while (running) {
                 try {
                     SaveTask task = QUEUE.take();
-                    task.storage.saveRegionBlocking(task.coord, task.region);
-                } catch (InterruptedException ignored) {}
+                    task.storage.saveRegionBlocking(task.coord, task.region, task.regionFile);
+                } catch (InterruptedException ignored) {
+                }
             }
         }, "NatosAtlas-RegionSaveWorker");
 
@@ -30,19 +33,21 @@ public class RegionSaveWorker {
         running = false;
     }
 
-    public static void enqueue(MapStorage storage, NACoord coord, MapRegion region) {
-        QUEUE.offer(new SaveTask(storage, coord, region));
+    public static void enqueue(MapStorage storage, NACoord coord, MapRegion region, File regionFile) {
+        QUEUE.offer(new SaveTask(storage, coord, region, regionFile));
     }
 
     private static final class SaveTask {
         final MapStorage storage;
         final NACoord coord;
         final MapRegion region;
+        final File regionFile;
 
-        SaveTask(MapStorage storage, NACoord coord, MapRegion region) {
+        SaveTask(MapStorage storage, NACoord coord, MapRegion region, File regionFile) {
             this.storage = storage;
             this.coord = coord;
             this.region = region;
+            this.regionFile = regionFile;
         }
     }
 }

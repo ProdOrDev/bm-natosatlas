@@ -1,14 +1,14 @@
 package dev.natowb.natosatlas.core.settings;
 
-import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.persistence.TextStorage;
+import dev.natowb.natosatlas.core.utils.NAPaths;
 
 import java.io.File;
 
 public final class SettingsStorage extends TextStorage {
 
     public SettingsStorage() {
-        super(new File(NatosAtlas.get().getDataPath().toFile(), "settings.txt"));
+        super(new File(NAPaths.getDataPath().toFile(), "settings.txt"));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package dev.natowb.natosatlas.core.waypoint;
 
-import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.persistence.TextStorage;
+import dev.natowb.natosatlas.core.utils.NAPaths;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public final class WaypointsStorage extends TextStorage {
     private final List<Waypoint> waypoints = new ArrayList<>();
 
     public WaypointsStorage() {
-        super(new File(NatosAtlas.get().getWorldDataPath().toFile(), "waypoints.txt"));
+        super(new File(NAPaths.getDataPath().toFile(), "waypoints.txt"));
     }
 
     public List<Waypoint> getAll() {

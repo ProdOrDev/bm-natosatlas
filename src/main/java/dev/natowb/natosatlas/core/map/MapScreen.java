@@ -102,6 +102,7 @@ public class MapScreen extends UIScreen {
 
     @Override
     public void tick() {
+        if (!NatosAtlas.get().isEnabled()) return;
         visibleRegions.clear();
         computeVisibleRegions(ctx, visibleRegions);
         NatosAtlas.get().updateCanvasVisibleRegions(visibleRegions);
@@ -116,12 +117,21 @@ public class MapScreen extends UIScreen {
                 ctx.canvasX, ctx.canvasY, ctx.canvasW, ctx.canvasH, UITheme.ELEMENT_BG
         );
 
+        if (!NatosAtlas.get().isEnabled()) {
+            String msg = "NatosAtlas is not enabled, check console for errors";
+            int textW = NatosAtlas.get().platform.painter.getStringWidth(msg);
+            int textX = ctx.canvasX + (ctx.canvasW - textW) / 2;
+            int textY = ctx.canvasY + ctx.canvasH / 2;
+
+            NatosAtlas.get().platform.painter.drawString(msg, textX, textY, UITheme.TITLE_TEXT);
+            return;
+        }
+
         viewport.begin(ctx, scaleInfo);
         mapPainter.drawRegions(visibleRegions);
         mapPainter.drawGrid(ctx);
         mapPainter.drawEntities(ctx);
         mapPainter.drawWaypoints(ctx);
-
         viewport.end();
 
         if (Settings.debugInfo) {

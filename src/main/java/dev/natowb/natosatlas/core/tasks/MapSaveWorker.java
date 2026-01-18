@@ -13,26 +13,35 @@ public class MapSaveWorker {
     private static final BlockingQueue<SaveTask> QUEUE = new LinkedBlockingQueue<>();
     private static volatile boolean running = false;
 
+    private static Thread workerThread;
+
     public static void start() {
         if (running) return;
         running = true;
 
-        Thread worker = new Thread(() -> {
+        workerThread = new Thread(() -> {
             while (running) {
                 try {
                     SaveTask task = QUEUE.take();
                     task.storage.saveRegionBlocking(task.coord, task.region, task.regionFile);
                 } catch (InterruptedException ignored) {
+                    break;
                 }
             }
         }, "NatosAtlas-RegionSaveWorker");
 
-        worker.setDaemon(true);
-        worker.start();
+        workerThread.setDaemon(true);
+        workerThread.start();
     }
 
     public static void stop() {
         running = false;
+        QUEUE.clear();
+
+        if (workerThread != null) {
+            workerThread.interrupt();
+            workerThread = null;
+        }
     }
 
     public static void enqueue(MapStorage storage, NACoord coord, MapRegion region, File regionFile) {

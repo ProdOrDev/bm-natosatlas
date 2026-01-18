@@ -39,12 +39,19 @@ public class NatosAtlas {
     public final MapCache cache;
     public final MapLayerManager layers;
 
-    public NAWorldInfo worldInfo;
-
+    private NAWorldInfo worldInfo;
+    private String worldSaveName;
     private int updateTimer = 0;
 
     private int activeChunkX;
     private int activeChunkZ;
+
+
+    private boolean enabled = false;
+
+    public boolean isEnabled() {
+        return enabled;
+    }
 
     public NatosAtlas(Platform platform) {
         if (instance != null) {
@@ -65,11 +72,19 @@ public class NatosAtlas {
         LogUtil.info("Initialization complete");
     }
 
-    public void onWorldJoin() {
-        worldInfo = platform.worldProvider.getWorldInfo();
-        LogUtil.info("Joined world: {}", worldInfo.worldName);
+    public void onWorldJoin(String saveName) {
 
-        NAPaths.updateWorldPath(worldInfo);
+        if (saveName == null) {
+            LogUtil.error("Failed to get saveName for world, disabling map");
+            enabled = false;
+            return;
+        }
+
+        enabled = true;
+        worldInfo = platform.worldProvider.getWorldInfo();
+        worldSaveName = saveName;
+        LogUtil.info("Joined world name={}, saveName={}", worldInfo.worldName, worldSaveName);
+        NAPaths.updateWorldPath(saveName);
         Waypoints.load();
 
         MapSaveWorker.start();
@@ -77,6 +92,9 @@ public class NatosAtlas {
     }
 
     public void onWorldLeft() {
+
+        if (!enabled) return;
+
         MapUpdateWorker.stop();
         MapSaveWorker.stop();
         cache.clear();
@@ -86,10 +104,7 @@ public class NatosAtlas {
     }
 
     public void onWorldUpdate() {
-        if (worldInfo == null) {
-            LogUtil.error("WHY ARE WE UPDATING WITHOUT A WORLD");
-            return;
-        }
+        if (!enabled) return;
 
         handleDimensionChange();
         updatePlayerChunk();
@@ -107,12 +122,9 @@ public class NatosAtlas {
 
     private void handleDimensionChange() {
         NAWorldInfo latest = platform.worldProvider.getWorldInfo();
-
         if (latest.worldDimension != worldInfo.worldDimension) {
             LogUtil.info("changed from DIM {} to DIM {}", worldInfo.worldDimension, latest.worldDimension);
             worldInfo = latest;
-
-            NAPaths.updateWorldPath(worldInfo);
         }
     }
 

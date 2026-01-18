@@ -3,6 +3,7 @@ package dev.natowb.natosatlas.core;
 import dev.natowb.natosatlas.core.data.NAEntity;
 import dev.natowb.natosatlas.core.data.NAWorldInfo;
 import dev.natowb.natosatlas.core.map.*;
+import dev.natowb.natosatlas.core.tasks.MapSaveScheduler;
 import dev.natowb.natosatlas.core.tasks.MapSaveWorker;
 import dev.natowb.natosatlas.core.platform.Platform;
 import dev.natowb.natosatlas.core.settings.Settings;
@@ -101,10 +102,7 @@ public class NatosAtlas {
             updateNearbyChunks();
         }
 
-        if (++saveTimer >= SAVE_INTERVAL) {
-            saveTimer = 0;
-            cache.saveOneRegion();
-        }
+        MapSaveScheduler.run();
     }
 
 
@@ -134,7 +132,6 @@ public class NatosAtlas {
             long time = worldInfo.worldTime % 24000L;
             layers.setActiveLayer(time < 12000L ? 0 : 1);
         }
-
     }
 
 

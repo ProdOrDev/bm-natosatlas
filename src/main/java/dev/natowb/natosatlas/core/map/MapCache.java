@@ -82,26 +82,22 @@ public class MapCache {
         }
     }
 
-    public void saveOneRegion() {
+    public Long pollDirty() {
         Long key = dirtyQueue.poll();
-        if (key == null) return;
+        if (key != null) dirtySet.remove(key);
+        return key;
+    }
 
-        dirtySet.remove(key);
+    public MapRegion[] getRegionArray(long key) {
+        return regions.get(key);
+    }
 
-        MapRegion[] arr = regions.get(key);
-        if (arr == null) {
-            LogUtil.warn("Dirty region {} missing from memory", NACoord.fromKey(key));
-            return;
-        }
+    public MapStorage getStorage() {
+        return storage;
+    }
 
-        NACoord coord = NACoord.fromKey(key);
-
-        for (int layerId = 0; layerId < layerCount; layerId++) {
-            MapRegion region = arr[layerId];
-            if (region != null) {
-                storage.saveRegion(layerId, coord, region);
-            }
-        }
+    public int getLayerCount() {
+        return layerCount;
     }
 
 

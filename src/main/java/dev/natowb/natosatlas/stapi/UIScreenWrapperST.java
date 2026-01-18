@@ -9,13 +9,13 @@ import net.minecraft.client.util.ScreenScaler;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.input.Keyboard;
 
-public class NacScreenWrapperST extends Screen {
+public class UIScreenWrapperST extends Screen {
 
     private final UIScreen nac;
     private boolean ignoreNextMouseClick = true;
     private static final Minecraft mc = (Minecraft) FabricLoader.getInstance().getGameInstance();
 
-    public NacScreenWrapperST(UIScreen nac) {
+    public UIScreenWrapperST(UIScreen nac) {
         this.nac = nac;
     }
 

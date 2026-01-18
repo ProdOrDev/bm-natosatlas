@@ -5,7 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL11;
 
-public class NacPainterST extends PlatformPainterDefault {
+public class PlatformPainterST extends PlatformPainterDefault {
 
     @Override
     public void drawString(String text, int x, int y, int color, boolean shadow) {

@@ -1,18 +1,16 @@
 package dev.natowb.natosatlas.stapi;
 
 import dev.natowb.natosatlas.core.platform.Platform;
-import dev.natowb.natosatlas.core.ui.UIScaleInfo;
 import dev.natowb.natosatlas.core.ui.elements.UIScreen;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.util.ScreenScaler;
 
 import java.nio.file.Path;
 
-public class NacPlatformST extends Platform {
+public class PlatformST extends Platform {
 
-    public NacPlatformST() {
-        super(new NacPainterST(), new NacWorldProviderST());
+    public PlatformST() {
+        super(new PlatformPainterST(), new PlatformWorldProviderST());
 
 
     }
@@ -29,7 +27,7 @@ public class NacPlatformST extends Platform {
         if (screen == null) {
             mc.setScreen(null);
         } else {
-            mc.setScreen(new NacScreenWrapperST(screen));
+            mc.setScreen(new UIScreenWrapperST(screen));
         }
     }
 

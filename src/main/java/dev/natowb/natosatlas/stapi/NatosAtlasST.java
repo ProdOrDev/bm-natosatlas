@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.lang.invoke.MethodHandles;
 
-public class NatosAtlasMod {
+public class NatosAtlasST {
     static {
         EntrypointManager.registerLookup(MethodHandles.lookup());
     }
@@ -27,14 +27,14 @@ public class NatosAtlasMod {
 
     @EventListener
     public void init(InitFinishedEvent event) {
-        nac = new NatosAtlas(new NacPlatformST());
+        nac = new NatosAtlas(new PlatformST());
     }
 
 
     @EventListener
     public void registerKeybinds(KeyBindingRegisterEvent event) {
         KEY_BINDING_MAP = new KeyBinding("key.natosatlas.map_keybind", Keyboard.KEY_M);
-        event.keyBindings.add(NatosAtlasMod.KEY_BINDING_MAP);
+        event.keyBindings.add(NatosAtlasST.KEY_BINDING_MAP);
     }
 
     @EventListener
@@ -61,7 +61,7 @@ public class NatosAtlasMod {
     public void handle(KeyStateChangedEvent event) {
         Minecraft mc = (Minecraft) FabricLoader.getInstance().getGameInstance();
         if (Keyboard.getEventKeyState()) {
-            if (Keyboard.isKeyDown(NatosAtlasMod.KEY_BINDING_MAP.code)) {
+            if (Keyboard.isKeyDown(NatosAtlasST.KEY_BINDING_MAP.code)) {
                 if (event.environment == KeyStateChangedEvent.Environment.IN_GAME) {
                     NatosAtlas.get().platform.openNacScreen(new MapScreen(null));
                 }

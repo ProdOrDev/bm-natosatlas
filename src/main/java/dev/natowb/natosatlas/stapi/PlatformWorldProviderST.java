@@ -42,7 +42,7 @@ import static dev.natowb.natosatlas.core.utils.ColorMapperUtil.BLOCK_WATER_STILL
 import static dev.natowb.natosatlas.core.utils.ColorMapperUtil.BLOCK_WEB_ID;
 import static dev.natowb.natosatlas.core.utils.Constants.BLOCKS_PER_MINECRAFT_CHUNK;
 
-public class NacWorldProviderST implements PlatformWorldProvider {
+public class PlatformWorldProviderST implements PlatformWorldProvider {
     Minecraft mc = (Minecraft) FabricLoader.getInstance().getGameInstance();
 
     @Override

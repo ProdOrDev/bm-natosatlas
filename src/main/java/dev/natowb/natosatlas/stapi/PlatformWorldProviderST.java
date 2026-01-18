@@ -150,8 +150,10 @@ public class PlatformWorldProviderST implements PlatformWorldProvider {
                     int worldChunkX = rx * 32 + x;
                     int worldChunkZ = rz * 32 + z;
 
-                    NAChunk chunk = getChunkFromDisk(NACoord.from(worldChunkX, worldChunkZ));
-                    NatosAtlas.get().renderer.updateChunk(worldChunkX, worldChunkZ, chunk);
+                    NACoord chunkCoord = NACoord.from(worldChunkX, worldChunkZ);
+
+                    NAChunk chunk = getChunkFromDisk(chunkCoord);
+                    NatosAtlas.get().renderer.renderChunk(chunkCoord, chunk);
                 }
             }
             LogUtil.info("Finished region r({}, {})  ({} chunks found)", rx, rz, processed);

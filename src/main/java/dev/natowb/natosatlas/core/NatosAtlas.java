@@ -42,7 +42,6 @@ public class NatosAtlas {
     public NAWorldInfo worldInfo;
 
     private int updateTimer = 0;
-    private int saveTimer = 0;
 
     private int activeChunkX;
     private int activeChunkZ;
@@ -171,7 +170,7 @@ public class NatosAtlas {
                 int wz = activeChunkZ + dz;
 
                 NAChunk chunk = platform.worldProvider.getChunk(NACoord.from(wx, wz));
-                MapUpdateWorker.enqueue(renderer, wx, wz, chunk);
+                MapUpdateWorker.enqueue(renderer, NACoord.from(wx, wz), chunk);
             }
         }
     }

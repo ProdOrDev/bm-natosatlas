@@ -5,22 +5,20 @@ import dev.natowb.natosatlas.core.data.NACoord;
 import dev.natowb.natosatlas.core.data.NAChunk;
 
 public class MapRenderer {
-    public void updateChunk(int worldChunkX, int worldChunkZ, NAChunk chunk) {
+
+    public void renderChunk(NACoord chunkCoord, NAChunk chunk) {
+
+        NACoord regionCoord = new NACoord(chunkCoord.x >> 5, chunkCoord.z >> 5);
+
         for (MapLayer layer : NatosAtlas.get().layers.getLayers()) {
-            buildChunkForLayer(worldChunkX, worldChunkZ, layer, chunk);
+            renderChunkByLayer(regionCoord, chunkCoord, layer, chunk);
         }
 
-        int regionChunkX = worldChunkX >> 5;
-        int regionChunkZ = worldChunkZ >> 5;
-        NatosAtlas.get().cache.markDirty(new NACoord(regionChunkX, regionChunkZ));
+        NatosAtlas.get().cache.markDirty(regionCoord);
     }
 
-    private void buildChunkForLayer(int worldChunkX, int worldChunkZ, MapLayer layer, NAChunk chunk) {
+    private void renderChunkByLayer(NACoord regionCoord, NACoord chunkCoord, MapLayer layer, NAChunk chunk) {
         if (chunk == null) return;
-
-        int regionChunkX = worldChunkX >> 5;
-        int regionChunkZ = worldChunkZ >> 5;
-        NACoord regionCoord = new NACoord(regionChunkX, regionChunkZ);
 
         MapCache cache = NatosAtlas.get().cache;
         MapRegion region = cache.getRegion(layer.id, regionCoord);
@@ -33,7 +31,7 @@ public class MapRenderer {
             if (diskLoaded != null) region = diskLoaded;
         }
 
-        layer.renderer.applyChunkToRegion(region, worldChunkX, worldChunkZ, chunk, layer.usesBlockLight);
+        layer.renderer.applyChunkToRegion(region, chunkCoord, chunk, layer.usesBlockLight);
     }
 }
 

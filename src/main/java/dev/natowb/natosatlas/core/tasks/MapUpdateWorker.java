@@ -1,6 +1,7 @@
 package dev.natowb.natosatlas.core.tasks;
 
 import dev.natowb.natosatlas.core.data.NAChunk;
+import dev.natowb.natosatlas.core.data.NACoord;
 import dev.natowb.natosatlas.core.map.MapRenderer;
 
 import java.util.concurrent.BlockingQueue;
@@ -8,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class MapUpdateWorker {
 
-    private static final BlockingQueue<ChunkTask> QUEUE = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<ChunkRenderTask> QUEUE = new LinkedBlockingQueue<>();
     private static volatile boolean running = false;
 
     public static void start() {
@@ -18,8 +19,8 @@ public class MapUpdateWorker {
         Thread worker = new Thread(() -> {
             while (running) {
                 try {
-                    ChunkTask task = QUEUE.take();
-                    task.manager.updateChunk(task.worldChunkX, task.worldChunkZ, task.chunk);
+                    ChunkRenderTask task = QUEUE.take();
+                    task.manager.renderChunk(task.chunkCoord, task.chunk);
                 } catch (InterruptedException ignored) {
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -35,10 +36,19 @@ public class MapUpdateWorker {
         running = false;
     }
 
-    public static void enqueue(MapRenderer manager, int worldChunkX, int worldChunkZ, NAChunk chunk) {
-        QUEUE.offer(new ChunkTask(manager, worldChunkX, worldChunkZ, chunk));
+    public static void enqueue(MapRenderer manager, NACoord chunkCoord, NAChunk chunk) {
+        QUEUE.offer(new ChunkRenderTask(manager, chunkCoord, chunk));
     }
 
-    private record ChunkTask(MapRenderer manager, int worldChunkX, int worldChunkZ, NAChunk chunk) {
+    private static final class ChunkRenderTask {
+        final MapRenderer manager;
+        final NACoord chunkCoord;
+        final NAChunk chunk;
+
+        private ChunkRenderTask(MapRenderer manager, NACoord chunkCoord, NAChunk chunk) {
+            this.manager = manager;
+            this.chunkCoord = chunkCoord;
+            this.chunk = chunk;
+        }
     }
 }

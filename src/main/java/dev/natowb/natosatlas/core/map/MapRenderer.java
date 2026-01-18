@@ -76,11 +76,11 @@ public class MapRenderer {
     }
 
     private void drawEntities(MapContext ctx) {
-        if (Settings.entityDisplayMode == Settings.EntityDisplayMode.NONE) return;
+        if (Settings.entityDisplayMode == Settings.EntityDisplayMode.Nothing) return;
 
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, NatosAtlas.get().platform.painter.getMinecraftTextureId("/misc/mapicons.png"));
 
-        if (Settings.entityDisplayMode == Settings.EntityDisplayMode.ALL) {
+        if (Settings.entityDisplayMode == Settings.EntityDisplayMode.All) {
             for (MapEntity e : NatosAtlas.get().platform.entityProvider.collectEntities()) {
                 renderEntity(e, ctx.zoom);
             }

@@ -9,4 +9,7 @@ public interface PlatformWorldProvider {
     int getDimension();
 
     boolean isDaytime();
+
+    void generateExistingChunks();
+
 }

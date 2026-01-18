@@ -2,13 +2,45 @@ package dev.natowb.natosatlas.core.map;
 
 import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.platform.PlatformPainter;
+import dev.natowb.natosatlas.core.settings.Settings;
+import dev.natowb.natosatlas.core.ui.UITheme;
 import org.lwjgl.opengl.GL11;
 
 public class MapOverlayRenderer {
 
     public void render(MapContext ctx) {
-        renderTooltip(ctx);
-        renderDebugInfo(ctx);
+        if(Settings.debugInfo) {
+            renderDebugInfo(ctx);
+        }
+        renderBottomBar(ctx);
+    }
+
+    private void renderBottomBar(MapContext ctx) {
+        PlatformPainter painter = NatosAtlas.get().platform.painter;
+
+        int barHeight = 20;
+        int x = ctx.canvasX;
+        int y = ctx.canvasY + ctx.canvasH - barHeight;
+        int w = ctx.canvasW;
+        int h = barHeight;
+
+        painter.drawRect(x, y, x + w, y + h, UITheme.ELEMENT_BG);
+
+        double worldPixelX = ctx.scrollX + ctx.mouseX / ctx.zoom;
+        double worldPixelZ = ctx.scrollY + ctx.mouseY / ctx.zoom;
+
+        int blockX = (int) (worldPixelX / 8.0);
+        int blockZ = (int) (worldPixelZ / 8.0);
+
+        String blockInfo = "Block: " + blockX + ", " + blockZ;
+        String shortcuts = "[Q/E] Zoom  |  [Space] Center on Player  |  Drag: Move Map";
+
+        int padding = 6;
+
+        painter.drawString(blockInfo, x + padding, y + 6, 0xFFFFFF);
+
+        int shortcutsWidth = painter.getStringWidth(shortcuts);
+        painter.drawString(shortcuts, x + w - shortcutsWidth - padding, y + 6, 0xCCCCCC);
     }
 
 
@@ -36,35 +68,5 @@ public class MapOverlayRenderer {
         y += 10;
         painter.drawString(String.format("Loaded Regions (Player): %d",
                 manager.getLoadedRegionCount()), 5, y, 0xFFFFFF);
-
     }
-
-    public void renderTooltip(MapContext ctx) {
-        PlatformPainter painter = NatosAtlas.get().platform.painter;
-        double worldPixelX = ctx.scrollX + ctx.mouseX / ctx.zoom;
-        double worldPixelZ = ctx.scrollY + ctx.mouseY / ctx.zoom;
-
-        int blockX = (int) (worldPixelX / 8.0);
-        int blockZ = (int) (worldPixelZ / 8.0);
-
-        String blockCoords = "Block: " + blockX + ", " + blockZ;
-        int tooltipX = ctx.mouseX + 12;
-        int tooltipY = ctx.mouseY + 12;
-
-
-        int width = painter.getStringWidth(blockCoords) + 6;
-        int height = 14;
-
-        int bgColor = 0xAA000000;
-        int borderColor = 0xFFFFFFFF;
-
-        painter.drawRect(tooltipX, tooltipY, tooltipX + width, tooltipY + height, bgColor);
-        painter.drawRect(tooltipX, tooltipY, tooltipX + width, tooltipY + 1, borderColor);
-        painter.drawRect(tooltipX, tooltipY + height - 1, tooltipX + width, tooltipY + height, borderColor);
-        painter.drawRect(tooltipX, tooltipY, tooltipX + 1, tooltipY + height, borderColor);
-        painter.drawRect(tooltipX + width - 1, tooltipY, tooltipX + width, tooltipY + height, borderColor);
-        painter.drawString(blockCoords, tooltipX + 3, tooltipY + 3, 0xFFFFFF);
-    }
-
-
 }

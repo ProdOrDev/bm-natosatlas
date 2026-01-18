@@ -7,14 +7,18 @@ public final class Settings {
     private static final SettingsStorage STORAGE = new SettingsStorage();
 
 
-    public enum EntityDisplayMode {ALL, ONLY_PLAYER, NONE}
+    public enum EntityDisplayMode {All, Player, Nothing}
+
+    public enum MapRenderMode {Day, Night, Auto}
 
     public static boolean mapGrid = true;
     public static boolean debugInfo = false;
     public static float defaultZoom = 0.5f;
-    public static EntityDisplayMode entityDisplayMode = EntityDisplayMode.ALL;
+    public static EntityDisplayMode entityDisplayMode = EntityDisplayMode.All;
+    public static MapRenderMode mapRenderMode = MapRenderMode.Auto;
 
-    private Settings() {}
+    private Settings() {
+    }
 
     public static void load() {
         STORAGE.load();
@@ -24,6 +28,5 @@ public final class Settings {
     public static void save() {
         STORAGE.save();
         LogUtil.info("Settings", "saved settings");
-
     }
 }

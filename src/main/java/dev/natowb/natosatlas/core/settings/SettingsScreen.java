@@ -114,6 +114,10 @@ public class SettingsScreen extends UIScreen {
             Settings.save();
             NatosAtlas.get().platform.openNacScreen(parent);
         }
+
+        if (generateExistingButton.handleClick(mouseX, mouseY)) {
+            NatosAtlas.get().platform.worldProvider.generateExistingChunks();
+        }
     }
 
     @Override

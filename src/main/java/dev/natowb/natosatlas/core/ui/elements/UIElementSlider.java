@@ -55,8 +55,8 @@ public class UIElementSlider {
 
         boolean hovered = mouseX >= x && mouseX <= x + w && mouseY >= y && mouseY <= y + h;
 
-        int bg = hovered ? UITheme.BUTTON_BG_HOVER : UITheme.BUTTON_BG;
-        int border = hovered ? UITheme.BUTTON_BORDER_HOVER : UITheme.BUTTON_BORDER;
+        int bg = hovered ? UITheme.ELEMENT_BG_HOVER : UITheme.ELEMENT_BG;
+        int border = hovered ? UITheme.BUTTON_BORDER_HOVER : UITheme.ELEMENT_BORDER;
 
         p.drawRect(x, y, x + w, y + h, bg);
 
@@ -65,15 +65,12 @@ public class UIElementSlider {
         p.drawRect(x, y, x + 1, y + h, border);
         p.drawRect(x + w - 1, y, x + w, y + h, border);
 
-        int trackColor = hovered ? UITheme.SLIDER_TRACK_BG_HOVER : UITheme.SLIDER_TRACK_BG;
-        p.drawRect(x + 4, y + 2, x + w - 4, y + h - 2, trackColor);
-
         int thumbW = 8;
         int thumbX = x + 4 + (int)(value * (w - 8 - 8));
 
         int thumbColor = dragging
-                ? UITheme.SLIDER_THUMB_DRAG
-                : (hovered ? UITheme.SLIDER_THUMB_HOVER : UITheme.SLIDER_THUMB);
+                ? UITheme.BUTTON_TEXT_DISABLED
+                : (hovered ? UITheme.ELEMENT_BORDER_HOVER : UITheme.ELEMENT_BORDER_HOVER);
 
         p.drawRect(thumbX, y + 2, thumbX + thumbW, y + h - 2, thumbColor);
 

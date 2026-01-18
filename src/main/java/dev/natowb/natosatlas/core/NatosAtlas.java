@@ -4,7 +4,6 @@ import dev.natowb.natosatlas.core.map.MapEntity;
 import dev.natowb.natosatlas.core.map.MapManager;
 import dev.natowb.natosatlas.core.platform.Platform;
 import dev.natowb.natosatlas.core.settings.Settings;
-import dev.natowb.natosatlas.core.settings.SettingsStorage;
 import dev.natowb.natosatlas.core.waypoint.Waypoints;
 import dev.natowb.natosatlas.core.utils.LogUtil;
 

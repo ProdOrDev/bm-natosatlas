@@ -20,8 +20,9 @@ public final class SettingsStorage extends TextStorage {
     protected void onLoad() {
         Settings.mapGrid = getBoolean("mapGrid", true);
         Settings.debugInfo = getBoolean("debugInfo", false);
-        Settings.defaultZoom = getFloat("defaultZoom", 0.5f);
-        Settings.entityDisplayMode = getEnum("entityDisplayMode", Settings.EntityDisplayMode.class, Settings.EntityDisplayMode.ALL);
+        Settings.defaultZoom = getFloat("defaultZoom", 1f);
+        Settings.entityDisplayMode = getEnum("entityDisplayMode", Settings.EntityDisplayMode.class, Settings.EntityDisplayMode.All);
+        Settings.mapRenderMode = getEnum("mapRenderMode", Settings.MapRenderMode.class, Settings.MapRenderMode.Auto);
     }
 
     @Override
@@ -30,5 +31,6 @@ public final class SettingsStorage extends TextStorage {
         put("debugInfo", Settings.debugInfo);
         put("defaultZoom", Settings.defaultZoom);
         put("entityDisplayMode", Settings.entityDisplayMode.name());
+        put("mapRenderMode", Settings.mapRenderMode.name());
     }
 }

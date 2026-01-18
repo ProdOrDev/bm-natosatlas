@@ -5,16 +5,46 @@ public enum SettingsOption {
     ENTITY_DISPLAY("Entities") {
         @Override
         public void cycle() {
-            var m = Settings.entityDisplayMode;
-            Settings.entityDisplayMode =
-                    m == Settings.EntityDisplayMode.ALL ? Settings.EntityDisplayMode.ONLY_PLAYER :
-                            m == Settings.EntityDisplayMode.ONLY_PLAYER ? Settings.EntityDisplayMode.NONE :
-                                    Settings.EntityDisplayMode.ALL;
+            Settings.EntityDisplayMode m = Settings.entityDisplayMode;
+            switch (m) {
+                case All:
+                    Settings.entityDisplayMode = Settings.EntityDisplayMode.Player;
+                    break;
+                case Player:
+                    Settings.entityDisplayMode = Settings.EntityDisplayMode.Nothing;
+                    break;
+                case Nothing:
+                    Settings.entityDisplayMode = Settings.EntityDisplayMode.All;
+                    break;
+            }
         }
 
         @Override
         public String getValueLabel() {
             return Settings.entityDisplayMode.name();
+        }
+    },
+
+    MAP_RENDER_MODE("Mode") {
+        @Override
+        public void cycle() {
+            Settings.MapRenderMode m = Settings.mapRenderMode;
+            switch (m) {
+                case Day:
+                    Settings.mapRenderMode = Settings.MapRenderMode.Night;
+                    break;
+                case Night:
+                    Settings.mapRenderMode = Settings.MapRenderMode.Auto;
+                    break;
+                case Auto:
+                    Settings.mapRenderMode = Settings.MapRenderMode.Day;
+                    break;
+            }
+        }
+
+        @Override
+        public String getValueLabel() {
+            return Settings.mapRenderMode.name();
         }
     },
 

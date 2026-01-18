@@ -6,6 +6,7 @@ import dev.natowb.natosatlas.core.utils.LogUtil;
 import javax.imageio.*;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Iterator;
@@ -109,4 +110,82 @@ public class MapStorage {
             return Optional.empty();
         }
     }
+
+
+    public void exportFullMap(Path outputFile) {
+        Path regionDir = getRegionDirectory();
+
+        try {
+            Files.createDirectories(outputFile.getParent());
+        } catch (IOException ignored) {}
+
+        File[] regionFiles = regionDir.toFile().listFiles((dir, name) -> name.endsWith(".png"));
+        if (regionFiles == null || regionFiles.length == 0) {
+            LogUtil.warn("MapExport", "No region PNGs found to export.");
+            return;
+        }
+
+        int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE;
+        int minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE;
+
+        for (File f : regionFiles) {
+            String name = f.getName();
+            String[] parts = name.substring(7, name.length() - 4).split("_");
+
+            int rx = Integer.parseInt(parts[0]);
+            int rz = Integer.parseInt(parts[1]);
+
+            minX = Math.min(minX, rx);
+            maxX = Math.max(maxX, rx);
+            minZ = Math.min(minZ, rz);
+            maxZ = Math.max(maxZ, rz);
+        }
+
+        int regionsX = (maxX - minX) + 1;
+        int regionsZ = (maxZ - minZ) + 1;
+
+        int regionSize = BLOCKS_PER_CANVAS_REGION;
+
+        int fullWidth = regionsX * regionSize;
+        int fullHeight = regionsZ * regionSize;
+
+        LogUtil.info("MapExport", "Exporting full map: {}x{} regions -> {}x{} px",
+                regionsX, regionsZ, fullWidth, fullHeight);
+
+        BufferedImage full = new BufferedImage(fullWidth, fullHeight, BufferedImage.TYPE_INT_ARGB);
+
+        // Draw each region
+        for (File f : regionFiles) {
+            String name = f.getName();
+            String[] parts = name.substring(7, name.length() - 4).split("_");
+
+            int rx = Integer.parseInt(parts[0]);
+            int rz = Integer.parseInt(parts[1]);
+
+            int px = (rx - minX) * regionSize;
+            int pz = (rz - minZ) * regionSize;
+
+            try {
+                BufferedImage regionImg = ImageIO.read(f);
+                if (regionImg == null) {
+                    LogUtil.warn("MapExport", "Skipping invalid region file {}", f);
+                    continue;
+                }
+
+                full.getRaster().setRect(px, pz, regionImg.getRaster());
+
+            } catch (IOException e) {
+                LogUtil.error("MapExport", e, "Failed to read region {}", f);
+            }
+        }
+
+        // Save final PNG
+        try {
+            ImageIO.write(full, "png", outputFile.toFile());
+            LogUtil.info("MapExport", "Full map exported to {}", outputFile);
+        } catch (IOException e) {
+            LogUtil.error("MapExport", e, "Failed to save full map to {}", outputFile);
+        }
+    }
+
 }

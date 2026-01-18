@@ -34,7 +34,8 @@ public class MapChunkRendererSurface implements MapChunkRenderer {
         if (y <= 0) return 0xFF000000;
 
         int id = chunk.blockIds[idx];
-        int base = ColorMapperUtil.get(id);
+        int meta = chunk.meta[idx];
+        int base = ColorMapperUtil.get(id, meta);
 
         if (isFluid(id))
             return waterColor(x, z, chunk, base);

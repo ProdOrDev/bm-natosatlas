@@ -1,6 +1,7 @@
 package dev.natowb.natosatlas.core.map;
 
 import dev.natowb.natosatlas.core.NatosAtlas;
+import dev.natowb.natosatlas.core.settings.Settings;
 
 import java.util.*;
 
@@ -79,7 +80,7 @@ public class MapManager {
         this.activeChunkX = playerChunkX;
         this.activeChunkZ = playerChunkZ;
 
-        autoSelectLayer();
+        updateSelectedLayer();
 
         if (++updateTimer >= UPDATE_INTERVAL) {
             updateTimer = 0;
@@ -93,8 +94,21 @@ public class MapManager {
         }
     }
 
-    private void autoSelectLayer() {
-        boolean day = NatosAtlas.get().platform.worldProvider.isDaytime();
+    private void updateSelectedLayer() {
+
+        boolean day = true;
+
+        switch (Settings.mapRenderMode) {
+            case Day:
+                day = true;
+                break;
+            case Night:
+                day = false;
+                break;
+            case Auto:
+                day = NatosAtlas.get().platform.worldProvider.isDaytime();
+                break;
+        }
         setActiveLayer(day ? 0 : 1);
     }
 
@@ -136,14 +150,22 @@ public class MapManager {
                 int chunkZ = playerChunkZ + dz;
 
                 MapChunk surface = NatosAtlas.get().platform.chunkProvider.buildSurface(chunkX, chunkZ);
-
-                for (MapLayer layer : layers) {
-                    buildChunkForLayer(chunkX, chunkZ, layer, surface);
-                }
+                updateChunk(chunkX, chunkZ, surface);
             }
         }
     }
 
+    public void updateChunk(int cx, int cz, MapChunk chunk) {
+        for (MapLayer layer : layers) {
+            buildChunkForLayer(cx, cz, layer, chunk);
+        }
+    }
+
+    public void exportLayers() {
+        for (MapLayer layer : layers) {
+            layer.cache().getStorage().exportFullMap(NatosAtlas.get().getWorldDataPath().resolve("layer_"+layer.id()+".png"));
+        }
+    }
 
     private void buildChunkForLayer(int chunkX, int chunkZ, MapLayer layer, MapChunk chunk) {
         if (chunk == null) return;

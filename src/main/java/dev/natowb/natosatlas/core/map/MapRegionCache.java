@@ -13,12 +13,16 @@ public class MapRegionCache {
     private final Queue<Long> dirtyQueue = new ArrayDeque<>();
     private final Set<Long> dirtySet = new HashSet<>();
 
-    private final Map<Long, int[]> pngCache = new LinkedHashMap<>(PNG_CACHE_SIZE, 0.75f, true) {
+    private final Map<Long, int[]> pngCache = new LinkedHashMap<Long, int[]>(PNG_CACHE_SIZE, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Long, int[]> eldest) {
             return size() > PNG_CACHE_SIZE;
         }
     };
+
+    public MapStorage getStorage() {
+        return storage;
+    }
 
     public MapRegionCache(MapStorage storage) {
         this.storage = storage;

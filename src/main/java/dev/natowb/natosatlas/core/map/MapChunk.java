@@ -6,6 +6,7 @@ public class MapChunk {
     public final int[] blockIds;
     public final int[] heights;
     public final int[] waterDepths;
+    public final int[] meta;
     public final int[] blockLight;
 
     public MapChunk() {
@@ -13,18 +14,20 @@ public class MapChunk {
         this.heights = new int[BLOCKS_PER_MINECRAFT_CHUNK * BLOCKS_PER_MINECRAFT_CHUNK];
         this.waterDepths = new int[BLOCKS_PER_MINECRAFT_CHUNK * BLOCKS_PER_MINECRAFT_CHUNK];
         this.blockLight = new int[BLOCKS_PER_MINECRAFT_CHUNK * BLOCKS_PER_MINECRAFT_CHUNK];
+        this.meta = new int[BLOCKS_PER_MINECRAFT_CHUNK * BLOCKS_PER_MINECRAFT_CHUNK];
     }
 
     private int index(int x, int z) {
         return z * BLOCKS_PER_MINECRAFT_CHUNK + x;
     }
 
-    public void set(int x, int z, int blockId, int height, int waterDepth, int blockLight) {
+    public void set(int x, int z, int height, int blockId, int depth, int blockLight, int meta) {
         int i = index(x, z);
-        blockIds[i] = blockId;
-        heights[i] = height;
-        waterDepths[i] = waterDepth;
+        this.heights[i] = height;
+        this.blockIds[i] = blockId;
+        this.waterDepths[i] = depth;
         this.blockLight[i] = blockLight;
+        this.meta[i] = meta;
     }
 
 }

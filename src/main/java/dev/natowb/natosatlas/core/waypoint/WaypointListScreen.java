@@ -1,6 +1,7 @@
 package dev.natowb.natosatlas.core.waypoint;
 
 import dev.natowb.natosatlas.core.NatosAtlas;
+import dev.natowb.natosatlas.core.ui.UIScaleInfo;
 import dev.natowb.natosatlas.core.ui.elements.UIElementButton;
 import dev.natowb.natosatlas.core.ui.elements.UIElementList;
 import dev.natowb.natosatlas.core.ui.UITheme;
@@ -82,7 +83,7 @@ public class WaypointListScreen extends UIScreen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
+    public void render(int mouseX, int mouseY, float delta, UIScaleInfo scaleInfo) {
         PlatformPainter p = NatosAtlas.get().platform.painter;
 
         p.drawRect(0, 0, width, height, UITheme.PANEL_BG);

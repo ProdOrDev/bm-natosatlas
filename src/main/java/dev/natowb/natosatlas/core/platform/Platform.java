@@ -16,8 +16,6 @@ public abstract class Platform {
         LogUtil.info("Platform", "Platform initialized");
     }
 
-    public abstract UIScaleInfo getScaleInfo();
-
     public abstract Path getMinecraftDirectory();
 
     public abstract void openNacScreen(UIScreen screen);

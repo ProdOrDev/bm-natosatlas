@@ -1,6 +1,7 @@
 package dev.natowb.natosatlas.core.ui.elements;
 
 import dev.natowb.natosatlas.core.NatosAtlas;
+import dev.natowb.natosatlas.core.ui.UIScaleInfo;
 import org.lwjgl.input.Keyboard;
 
 public abstract class UIScreen {
@@ -21,7 +22,8 @@ public abstract class UIScreen {
     public void tick() {
     }
 
-    public void render(int mouseX, int mouseY, float delta) {
+    public void render(int mouseX, int mouseY, float delta, UIScaleInfo scaleInfo) {
+
     }
 
     public void mouseDown(int mouseX, int mouseY, int button) {

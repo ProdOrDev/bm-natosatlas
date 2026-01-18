@@ -4,6 +4,7 @@ import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.data.NAEntity;
 import dev.natowb.natosatlas.core.settings.Settings;
 import dev.natowb.natosatlas.core.settings.SettingsOption;
+import dev.natowb.natosatlas.core.ui.UIScaleInfo;
 import dev.natowb.natosatlas.core.ui.UITheme;
 import dev.natowb.natosatlas.core.ui.elements.UIElementButton;
 import dev.natowb.natosatlas.core.ui.elements.UIElementOptionButton;
@@ -95,7 +96,7 @@ public class MapScreen extends UIScreen {
 
 
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
+    public void render(int mouseX, int mouseY, float delta, UIScaleInfo scaleInfo) {
         ctx.mouseX = mouseX;
         ctx.mouseY = mouseY;
 
@@ -103,10 +104,7 @@ public class MapScreen extends UIScreen {
                 ctx.canvasX, ctx.canvasY, ctx.canvasW, ctx.canvasH, UITheme.ELEMENT_BG
         );
 
-        viewport.begin(ctx,
-                NatosAtlas.get().platform.getScaleInfo().scaleFactor,
-                NatosAtlas.get().platform.getScaleInfo().scaledHeight
-        );
+        viewport.begin(ctx, scaleInfo);
 
         mapPainter.drawRegions(ctx);
         mapPainter.drawGrid(ctx);

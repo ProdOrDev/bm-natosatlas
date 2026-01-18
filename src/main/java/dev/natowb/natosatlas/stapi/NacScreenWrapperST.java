@@ -1,7 +1,11 @@
 package dev.natowb.natosatlas.stapi;
 
+import dev.natowb.natosatlas.core.ui.UIScaleInfo;
 import dev.natowb.natosatlas.core.ui.elements.UIScreen;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.ScreenScaler;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.input.Keyboard;
 
@@ -9,6 +13,7 @@ public class NacScreenWrapperST extends Screen {
 
     private final UIScreen nac;
     private boolean ignoreNextMouseClick = true;
+    private static final Minecraft mc = (Minecraft) FabricLoader.getInstance().getGameInstance();
 
     public NacScreenWrapperST(UIScreen nac) {
         this.nac = nac;
@@ -35,7 +40,8 @@ public class NacScreenWrapperST extends Screen {
 
     @Override
     public void render(int mouseX, int mouseY, float delta) {
-        nac.render(mouseX, mouseY, delta);
+        ScreenScaler ss = new ScreenScaler(mc.options, mc.displayWidth, mc.displayHeight);
+        nac.render(mouseX, mouseY, delta, new UIScaleInfo(ss.scaleFactor, ss.getScaledWidth(), ss.getScaledHeight()));
     }
 
     @Override

@@ -1,17 +1,18 @@
 package dev.natowb.natosatlas.core.map;
 
+import dev.natowb.natosatlas.core.ui.UIScaleInfo;
 import org.lwjgl.opengl.GL11;
 
 public class MapViewport {
 
-    public void begin(MapContext ctx, int scaleFactor, int scaledHeight) {
+    public void begin(MapContext ctx, UIScaleInfo scaleInfo) {
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
 
         GL11.glScissor(
-                ctx.canvasX * scaleFactor,
-                (scaledHeight - (ctx.canvasY + ctx.canvasH)) * scaleFactor,
-                ctx.canvasW * scaleFactor,
-                ctx.canvasH * scaleFactor
+                ctx.canvasX * scaleInfo.scaleFactor,
+                (scaleInfo.scaledHeight - (ctx.canvasY + ctx.canvasH)) * scaleInfo.scaleFactor,
+                ctx.canvasW * scaleInfo.scaleFactor,
+                ctx.canvasH * scaleInfo.scaleFactor
         );
 
         GL11.glPushMatrix();

@@ -17,12 +17,6 @@ public class NacPlatformST extends Platform {
 
     }
 
-    @Override
-    public UIScaleInfo getScaleInfo() {
-        Minecraft mc = (Minecraft) FabricLoader.getInstance().getGameInstance();
-        ScreenScaler ss = new ScreenScaler(mc.options, mc.displayWidth, mc.displayHeight);
-        return new UIScaleInfo(ss.scaleFactor, ss.getScaledWidth(), ss.getScaledHeight());
-    }
 
     @Override
     public Path getMinecraftDirectory() {

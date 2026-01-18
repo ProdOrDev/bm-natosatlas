@@ -2,10 +2,11 @@ package dev.natowb.natosatlas.core;
 
 import dev.natowb.natosatlas.core.map.MapEntity;
 import dev.natowb.natosatlas.core.map.MapManager;
+import dev.natowb.natosatlas.core.map.RegionSaveWorker;
 import dev.natowb.natosatlas.core.platform.Platform;
 import dev.natowb.natosatlas.core.settings.Settings;
-import dev.natowb.natosatlas.core.waypoint.Waypoints;
 import dev.natowb.natosatlas.core.utils.LogUtil;
+import dev.natowb.natosatlas.core.waypoint.Waypoints;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,11 +50,14 @@ public class NatosAtlas {
         updateWorldDataPath();
         updateWorldRegionDataPath();
         Waypoints.load();
+        RegionSaveWorker.start();
     }
 
     public void onWorldLeft() {
         LogUtil.info("NatosAtlas", "World left, clearing region cache");
+        RegionSaveWorker.stop();
         regionManager.cleanup();
+
     }
 
     public void onWorldUpdate() {

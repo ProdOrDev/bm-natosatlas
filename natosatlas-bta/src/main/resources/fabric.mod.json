@@ -5,11 +5,11 @@
 	"name": "Natos Atlas",
 	"description": "world map mod for minecraft 1.7.3 ported to BTA",
 	"authors": [
-		"Turnip Labs"
+		"natowb"
 	],
 	"contact": {
-		"homepage": "",
-		"sources": ""
+		"homepage": "https://github.com/natowb/bm-natosatlas",
+		"sources": "https://github.com/natowb/bm-natosatlas"
 	},
 	"icon": "icon.png",
 	"license": "MIT",

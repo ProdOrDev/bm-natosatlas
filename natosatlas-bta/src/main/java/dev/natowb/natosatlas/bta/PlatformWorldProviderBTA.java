@@ -179,11 +179,6 @@ public class PlatformWorldProviderBTA implements PlatformWorldProvider {
 				int worldBlockZ = chunkCoord.z * BLOCKS_PER_MINECRAFT_CHUNK + z;
 
 				int height = mc.currentWorld.findTopSolidBlock(worldBlockX, worldBlockZ) - 1;
-				if (height < 0) {
-					LogUtil.warn("HEIGHT IS LESS THAN ZERO {}", height);
-					height = 0;
-				}
-
 				int aboveId = chunk.getBlockID(x, height + 1, z);
 
 				final int SNOW_LAYER_ID = Blocks.LAYER_SNOW.id();

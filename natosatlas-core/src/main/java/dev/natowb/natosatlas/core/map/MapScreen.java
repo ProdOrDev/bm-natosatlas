@@ -211,18 +211,14 @@ public class MapScreen extends UIScreen {
     @Override
     public void keyPressed(char character, int keyCode) {
         super.keyPressed(character, keyCode);
+        if (keyCode == Keyboard.KEY_SPACE) {
+            NAEntity player = NatosAtlas.get().platform.worldProvider.getPlayer();
+            if (player != null) {
+                float playerPixelX = (float) player.x * 8f;
+                float playerPixelZ = (float) player.z * 8f;
+                ctx.scrollX = playerPixelX - (ctx.canvasW / 2f) / ctx.zoom;
+                ctx.scrollY = playerPixelZ - (ctx.canvasH / 2f) / ctx.zoom;
 
-        switch (keyCode) {
-            case Keyboard.KEY_SPACE: {
-                NAEntity player = NatosAtlas.get().platform.worldProvider.getPlayer();
-                if (player != null) {
-                    float playerPixelX = (float) player.x * 8f;
-                    float playerPixelZ = (float) player.z * 8f;
-                    ctx.scrollX = playerPixelX - (ctx.canvasW / 2f) / ctx.zoom;
-                    ctx.scrollY = playerPixelZ - (ctx.canvasH / 2f) / ctx.zoom;
-
-                }
-                break;
             }
         }
     }

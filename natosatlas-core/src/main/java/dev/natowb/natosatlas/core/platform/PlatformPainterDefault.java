@@ -122,7 +122,6 @@ public class PlatformPainterDefault implements PlatformPainter {
     }
 
 
-
     // TODO: these things are implemented by the backend ie station api or ModLoader.
     @Override
     public int getStringWidth(String text) {

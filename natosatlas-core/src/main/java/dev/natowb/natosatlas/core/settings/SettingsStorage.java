@@ -20,6 +20,7 @@ public final class SettingsStorage extends TextStorage {
         Settings.defaultZoom = getFloat("defaultZoom", 1f);
         Settings.entityDisplayMode = getEnum("entityDisplayMode", Settings.EntityDisplayMode.class, Settings.EntityDisplayMode.Player);
         Settings.mapRenderMode = getEnum("mapRenderMode", Settings.MapRenderMode.class, Settings.MapRenderMode.Auto);
+        Settings.showSlimeChunks = getBoolean("showSlimeChunks", false);
     }
 
     @Override
@@ -29,5 +30,6 @@ public final class SettingsStorage extends TextStorage {
         put("defaultZoom", Settings.defaultZoom);
         put("entityDisplayMode", Settings.entityDisplayMode.name());
         put("mapRenderMode", Settings.mapRenderMode.name());
+        put("showSlimeChunks", Settings.showSlimeChunks);
     }
 }

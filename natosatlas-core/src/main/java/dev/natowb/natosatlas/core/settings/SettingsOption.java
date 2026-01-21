@@ -60,6 +60,18 @@ public enum SettingsOption {
         }
     },
 
+    SLIME_CHUNKS("Slimes") {
+        @Override
+        public void cycle() {
+            Settings.showSlimeChunks = !Settings.showSlimeChunks;
+        }
+
+        @Override
+        public String getValueLabel() {
+            return Settings.showSlimeChunks ? "On" : "Off";
+        }
+    },
+
     DEBUG_INFO("Debug") {
         @Override
         public void cycle() {

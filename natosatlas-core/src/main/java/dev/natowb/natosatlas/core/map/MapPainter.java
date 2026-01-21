@@ -1,8 +1,10 @@
 package dev.natowb.natosatlas.core.map;
 
 import dev.natowb.natosatlas.core.NatosAtlas;
+import dev.natowb.natosatlas.core.data.NAChunk;
 import dev.natowb.natosatlas.core.data.NACoord;
 import dev.natowb.natosatlas.core.data.NAEntity;
+import dev.natowb.natosatlas.core.data.NAWorldInfo;
 import dev.natowb.natosatlas.core.platform.PlatformPainter;
 import dev.natowb.natosatlas.core.ui.UITheme;
 import dev.natowb.natosatlas.core.waypoint.Waypoints;
@@ -11,20 +13,69 @@ import dev.natowb.natosatlas.core.settings.Settings;
 import dev.natowb.natosatlas.core.utils.Constants;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Random;
 import java.util.Set;
 
+import static dev.natowb.natosatlas.core.utils.Constants.CHUNKS_PER_MINECRAFT_REGION;
 import static dev.natowb.natosatlas.core.utils.Constants.PIXELS_PER_CANVAS_CHUNK;
 
 public class MapPainter {
 
-    public void drawRegions(Set<Long> visible) {
-        for (long key : visible) {
+    public void drawRegions(Set<Long> visibleRegions) {
+        for (long key : visibleRegions) {
             NACoord coord = NACoord.fromKey(key);
             int texId = NatosAtlas.get().textures.getTexture(coord);
             if (texId != -1) {
                 drawRegionTexture(coord.x, coord.z, texId);
             }
         }
+    }
+
+    private boolean isSlimeChunk(int worldChunkX, int worldChunkZ) {
+        NAWorldInfo info = NatosAtlas.get().platform.worldProvider.getWorldInfo();
+        return new Random(info.worldSeed + (long) (worldChunkX * worldChunkZ * 4987142) +
+                (long) (worldChunkX * 5947611) + (long) (worldChunkZ * worldChunkZ) * 4392871L +
+                (long) (worldChunkZ * 389711) ^ 987234911L).nextInt(10) == 0;
+
+    }
+
+    public void drawSlimeChunks(Set<Long> visibleRegions) {
+        if (!Settings.showSlimeChunks) return;
+
+        for (long key : visibleRegions) {
+            NACoord coord = NACoord.fromKey(key);
+            int texId = NatosAtlas.get().textures.getTexture(coord);
+            if (texId != -1) {
+                for (int x = 0; x < CHUNKS_PER_MINECRAFT_REGION; x++) {
+                    for (int z = 0; z < CHUNKS_PER_MINECRAFT_REGION; z++) {
+                        int worldChunkX = coord.x * CHUNKS_PER_MINECRAFT_REGION + x;
+                        int worldChunkZ = coord.z * CHUNKS_PER_MINECRAFT_REGION + z;
+                        if (!isSlimeChunk(worldChunkX, worldChunkZ)) continue;
+                        drawSlimeChunkSquare(worldChunkX, worldChunkZ);
+                    }
+                }
+            }
+        }
+    }
+
+    public void drawSlimeChunkSquare(int chunkX, int chunkZ) {
+        double worldX = chunkX * 16;
+        double worldZ = chunkZ * 16;
+
+        int px = (int) (worldX * Constants.PIXELS_PER_CANVAS_UNIT);
+        int pz = (int) (worldZ * Constants.PIXELS_PER_CANVAS_UNIT);
+
+        int size = PIXELS_PER_CANVAS_CHUNK;
+
+        int x1 = px + size;
+        int y1 = pz + size;
+        int x2 = px;
+        int y2 = pz;
+
+        NatosAtlas.get().platform.painter.drawRect(
+                x1, y1, x2, y2,
+                0x8000FF00
+        );
     }
 
 

@@ -41,7 +41,7 @@ public class PlatformWorldProviderST implements PlatformWorldProvider {
         } else {
             name = mc.world.getProperties().getName();
         }
-        return new NAWorldInfo(name, isServer, time, dimension);
+        return new NAWorldInfo(name, isServer, time, dimension, mc.world.getProperties().getSeed());
     }
 
     @Override

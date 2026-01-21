@@ -26,6 +26,7 @@ public class MapScreen extends UIScreen {
 
     private UIElementButton settingsButton;
     private UIElementOptionButton dayNightButton;
+    private UIElementOptionButton slimeChunksButton;
     private UIElementButton waypointsButton;
     private UIElementButton closeButton;
 
@@ -97,6 +98,15 @@ public class MapScreen extends UIScreen {
                 buttonH,
                 SettingsOption.MAP_RENDER_MODE
         );
+
+        slimeChunksButton = new UIElementOptionButton(
+                1004,
+                dayNightButton.x - hGap - buttonW,
+                padding,
+                buttonW,
+                buttonH,
+                SettingsOption.SLIME_CHUNKS
+        );
     }
 
     @Override
@@ -128,6 +138,7 @@ public class MapScreen extends UIScreen {
 
         viewport.begin(ctx, scaleInfo);
         mapPainter.drawRegions(visibleRegions);
+        mapPainter.drawSlimeChunks(visibleRegions);
         mapPainter.drawGrid(ctx);
         mapPainter.drawEntities(ctx);
         mapPainter.drawWaypoints(ctx);
@@ -143,6 +154,7 @@ public class MapScreen extends UIScreen {
         waypointsButton.render(mouseX, mouseY);
         closeButton.render(mouseX, mouseY);
         dayNightButton.render(mouseX, mouseY);
+        slimeChunksButton.render(mouseX, mouseY);
     }
 
 
@@ -165,6 +177,12 @@ public class MapScreen extends UIScreen {
 
         if (dayNightButton.handleClick(mouseX, mouseY)) {
             dayNightButton.cycle();
+            Settings.save();
+            return;
+        }
+
+        if (slimeChunksButton.handleClick(mouseX, mouseY)) {
+            slimeChunksButton.cycle();
             Settings.save();
             return;
         }
@@ -230,6 +248,7 @@ public class MapScreen extends UIScreen {
         waypointsButton.resetClickState();
         closeButton.resetClickState();
         dayNightButton.resetClickState();
+        slimeChunksButton.resetClickState();
     }
 
 

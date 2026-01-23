@@ -175,7 +175,7 @@ public class PlatformWorldProviderBTA implements PlatformWorldProvider {
                 int worldBlockX = chunkCoord.x * BLOCKS_PER_MINECRAFT_CHUNK + x;
                 int worldBlockZ = chunkCoord.z * BLOCKS_PER_MINECRAFT_CHUNK + z;
 
-                int height = mc.currentWorld.findTopSolidBlock(worldBlockX, worldBlockZ) - 1;
+                int height = getTopSolidBlockY(chunk, x, z) - 1;
                 int aboveId = chunk.getBlockID(x, height + 1, z);
 
                 final int SNOW_LAYER_ID = Blocks.LAYER_SNOW.id();
@@ -240,14 +240,20 @@ public class PlatformWorldProviderBTA implements PlatformWorldProvider {
     }
 
     private int getTopSolidBlockY(Chunk chunk, int x, int z) {
-        int var4 = 127;
+        int y = 127;
         x &= 15;
+        int z0 = z & 15;
 
-        for (int var8 = z & 15; var4 > 0; --var4) {
-            int var5 = chunk.getBlockID(x, var4, var8);
-            Material var6 = var5 == 0 ? Material.air : Blocks.getBlock(var5).getMaterial();
-            if (var6.blocksMotion() || var6.isLiquid()) {
-                return var4 + 1;
+        for (; y > 0; --y) {
+            int blockId = chunk.getBlockID(x, y, z0);
+            Material mat = blockId == 0 ? Material.air : Blocks.getBlock(blockId).getMaterial();
+
+            if (mat == Material.glass) {
+                continue;
+            }
+
+            if (mat.blocksMotion() || mat.isLiquid()) {
+                return y + 1;
             }
         }
 

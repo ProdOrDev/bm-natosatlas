@@ -80,6 +80,11 @@ public class WorldAccessBTA extends WorldAccess {
     }
 
     @Override
+    public boolean hasCeiling() {
+        return mc.currentWorld.getWorldType().hasCeiling();
+    }
+
+    @Override
     public boolean isServer() {
         return mc.currentWorld.isClientSide;
     }

@@ -31,6 +31,8 @@ public abstract class WorldAccess {
 
     public abstract int getDimensionId();
 
+    public abstract boolean hasCeiling();
+
     public abstract boolean isServer();
 
     public abstract NABiome getBiome(NACoord blockCoord);

@@ -81,6 +81,11 @@ public class WorldAccessST extends WorldAccess {
     }
 
     @Override
+    public boolean hasCeiling() {
+        return mc.world.dimension.hasCeiling;
+    }
+
+    @Override
     public boolean isServer() {
         return mc.world.isRemote;
     }

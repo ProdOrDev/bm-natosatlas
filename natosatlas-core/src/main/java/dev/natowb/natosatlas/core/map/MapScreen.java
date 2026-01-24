@@ -4,14 +4,12 @@ import dev.natowb.natosatlas.core.NatosAtlas;
 import dev.natowb.natosatlas.core.data.NAEntity;
 import dev.natowb.natosatlas.core.platform.PlatformPainter;
 import dev.natowb.natosatlas.core.render.*;
-
 import dev.natowb.natosatlas.core.settings.Settings;
 import dev.natowb.natosatlas.core.settings.SettingsOption;
 import dev.natowb.natosatlas.core.settings.SettingsScreen;
 import dev.natowb.natosatlas.core.tasks.MapSaveWorker;
 import dev.natowb.natosatlas.core.tasks.MapUpdateScheduler;
 import dev.natowb.natosatlas.core.ui.UIScaleInfo;
-
 import dev.natowb.natosatlas.core.ui.UITheme;
 import dev.natowb.natosatlas.core.ui.elements.UIElementButton;
 import dev.natowb.natosatlas.core.ui.elements.UIElementOptionButton;
@@ -26,12 +24,18 @@ import java.util.Set;
 public class MapScreen extends UIScreen {
 
     private final MapViewport viewport = new MapViewport();
+    private final PlatformPainter painter = NatosAtlas.get().platform.painter;
+
+    private final MapRegionPainter regionPainter = new MapRegionPainter();
+    private final MapSlimeChunkPainter slimePainter = new MapSlimeChunkPainter();
+    private final MapGridPainter gridPainter = new MapGridPainter();
+    private final MapEntitiesPainter entitiesPainter = new MapEntitiesPainter();
+
     private UIElementButton settingsButton;
     private UIElementOptionButton dayNightButton;
     private UIElementOptionButton slimeChunksButton;
     private UIElementButton waypointsButton;
     private UIElementButton closeButton;
-
 
     public MapScreen(UIScreen parent) {
         super(parent);
@@ -49,9 +53,7 @@ public class MapScreen extends UIScreen {
             viewport.centerOn((float) player.x * 8f, (float) player.z * 8f);
         }
 
-
         int padding = 6;
-
         int buttonW = 80;
         int buttonH = 20;
         int hGap = 6;
@@ -80,19 +82,19 @@ public class MapScreen extends UIScreen {
 
     @Override
     public void render(int mouseX, int mouseY, float delta, UIScaleInfo scaleInfo) {
-        NatosAtlas.get().platform.painter.drawRect(0, 0, width, height, UITheme.PANEL_BG);
+        painter.drawRect(0, 0, width, height, UITheme.PANEL_BG);
 
         viewport.updateMouse(mouseX, mouseY);
-
         viewport.begin(scaleInfo);
 
         MapContext ctx = viewport.getContext();
         Set<Long> visible = viewport.computeVisibleRegions();
 
-        new MapRenderRegions().render(ctx, visible);
-        new MapRenderSlimeChunks().render(ctx, visible);
-        new MapRenderGrid().render(ctx, visible);
-        new MapRenderEntities().render(ctx, visible);
+        regionPainter.draw(ctx, visible);
+        slimePainter.draw(ctx, visible);
+        gridPainter.draw(ctx, visible);
+        entitiesPainter.draw(ctx, visible);
+
         viewport.end();
 
         renderDebugInfo(ctx);
@@ -101,11 +103,9 @@ public class MapScreen extends UIScreen {
         super.render(mouseX, mouseY, delta, scaleInfo);
     }
 
-
     @Override
     public void mouseDown(int x, int y, int button) {
         super.mouseDown(x, y, button);
-
         if (button == 0) viewport.dragStart(x, y);
         if (button == 1) viewport.rotateStart(x, y);
     }
@@ -113,7 +113,6 @@ public class MapScreen extends UIScreen {
     @Override
     public void mouseDrag(int x, int y, int button) {
         super.mouseDrag(x, y, button);
-
         if (button == 0) viewport.dragMove(x, y);
         if (button == 1) viewport.rotateMove(x, y);
     }
@@ -121,11 +120,9 @@ public class MapScreen extends UIScreen {
     @Override
     public void mouseUp(int x, int y, int button) {
         super.mouseUp(x, y, button);
-
         if (button == 0) viewport.dragEnd();
         if (button == 1) viewport.rotateEnd();
     }
-
 
     @Override
     public void mouseScroll(int amount) {
@@ -180,8 +177,8 @@ public class MapScreen extends UIScreen {
 
     private void renderDebugInfo(MapContext ctx) {
         if (!Settings.debugInfo) return;
+
         GL11.glEnable(GL11.GL_TEXTURE_2D);
-        PlatformPainter painter = NatosAtlas.get().platform.painter;
 
         int y = 5;
         painter.drawString("Canvas", 5, y, 0xFFFFFF);
@@ -192,7 +189,6 @@ public class MapScreen extends UIScreen {
         y += 10;
         painter.drawString(String.format("Zoom: %.2f", ctx.zoom), 5, y, 0xFFFFFF);
 
-
         y += 15;
         painter.drawString("Schedulers", 5, y, 0xFFFFFF);
         y += 10;
@@ -200,23 +196,17 @@ public class MapScreen extends UIScreen {
         y += 10;
         painter.drawString(String.format("Scheduled Updates: %d", MapUpdateScheduler.getPendingCount()), 5, y, 0xFFFFFF);
 
-
         y += 15;
         painter.drawString("Cache", 5, y, 0xFFFFFF);
         y += 10;
-        painter.drawString(String.format("Total Cache Size: %d",
-                NatosAtlas.get().cache.getCacheSize()), 5, y, 0xFFFFFF);
+        painter.drawString(String.format("Total Cache Size: %d", NatosAtlas.get().cache.getCacheSize()), 5, y, 0xFFFFFF);
         y += 10;
-        painter.drawString(String.format("Dirty Queue Size: %d",
-                NatosAtlas.get().cache.getDirtyQueueSize()), 5, y, 0xFFFFFF);
+        painter.drawString(String.format("Dirty Queue Size: %d", NatosAtlas.get().cache.getDirtyQueueSize()), 5, y, 0xFFFFFF);
         y += 10;
-        painter.drawString(String.format("PNG Cache Size: %d",
-                NatosAtlas.get().cache.getPngCacheSize()), 5, y, 0xFFFFFF);
+        painter.drawString(String.format("PNG Cache Size: %d", NatosAtlas.get().cache.getPngCacheSize()), 5, y, 0xFFFFFF);
     }
 
     private void renderFooter(MapContext ctx) {
-        PlatformPainter painter = NatosAtlas.get().platform.painter;
-
         int barHeight = 20;
         int x = ctx.canvasX;
         int y = ctx.canvasY + ctx.canvasH - barHeight;
@@ -242,4 +232,3 @@ public class MapScreen extends UIScreen {
         painter.drawString(shortcuts, x + w - shortcutsWidth - padding, y + 6, 0xCCCCCC);
     }
 }
-

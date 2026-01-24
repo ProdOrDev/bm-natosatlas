@@ -7,9 +7,9 @@ import dev.natowb.natosatlas.core.utils.Constants;
 
 import java.util.Set;
 
-public class MapRenderRegions implements MapRenderStage {
+public class MapRegionPainter implements MapStagePainter {
     @Override
-    public void render(MapContext ctx, Set<Long> visibleRegions) {
+    public void draw(MapContext ctx, Set<Long> visibleRegions) {
         for (long key : visibleRegions) {
             NACoord coord = NACoord.fromKey(key);
             int texId = NatosAtlas.get().textures.getTexture(coord);

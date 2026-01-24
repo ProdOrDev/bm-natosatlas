@@ -11,10 +11,10 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Set;
 
-public class MapRenderEntities implements MapRenderStage {
+public class MapEntitiesPainter implements MapStagePainter {
 
     @Override
-    public void render(MapContext ctx, Set<Long> visibleRegions) {
+    public void draw(MapContext ctx, Set<Long> visibleRegions) {
         drawEntities(ctx);
         drawWaypoints(ctx);
     }

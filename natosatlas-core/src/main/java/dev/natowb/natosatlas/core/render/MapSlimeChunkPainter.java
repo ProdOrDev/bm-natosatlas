@@ -12,9 +12,9 @@ import java.util.Set;
 import static dev.natowb.natosatlas.core.utils.Constants.CHUNKS_PER_MINECRAFT_REGION;
 import static dev.natowb.natosatlas.core.utils.Constants.PIXELS_PER_CANVAS_CHUNK;
 
-public class MapRenderSlimeChunks implements MapRenderStage {
+public class MapSlimeChunkPainter implements MapStagePainter {
     @Override
-    public void render(MapContext ctx, Set<Long> visibleRegions) {
+    public void draw(MapContext ctx, Set<Long> visibleRegions) {
         if (!Settings.showSlimeChunks) return;
         for (long key : visibleRegions) {
             NACoord coord = NACoord.fromKey(key);
@@ -32,6 +32,7 @@ public class MapRenderSlimeChunks implements MapRenderStage {
         }
     }
 
+    // FIXME: move this to a global acessor at some point
     private boolean isSlimeChunk(int worldChunkX, int worldChunkZ) {
         long seed = NatosAtlas.get().getCurrentWorld().getSeed();
         return new Random(seed + (long) (worldChunkX * worldChunkX) * 4987142L + (long) worldChunkX * 5947611L + (long) (worldChunkZ * worldChunkZ) * 4392871L + (long) worldChunkZ * 389711L ^ 987234911L).nextInt(10) == 0;

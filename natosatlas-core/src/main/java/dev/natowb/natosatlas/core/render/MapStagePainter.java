@@ -4,7 +4,7 @@ import dev.natowb.natosatlas.core.map.MapContext;
 
 import java.util.Set;
 
-public interface MapRenderStage {
-    void render(MapContext ctx, Set<Long> visibleRegions);
+public interface MapStagePainter {
+    void draw(MapContext ctx, Set<Long> visibleRegions);
 }
 

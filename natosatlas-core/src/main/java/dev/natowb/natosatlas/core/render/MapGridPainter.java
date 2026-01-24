@@ -9,9 +9,9 @@ import java.util.Set;
 
 import static dev.natowb.natosatlas.core.utils.Constants.PIXELS_PER_CANVAS_CHUNK;
 
-public class MapRenderGrid implements MapRenderStage {
+public class MapGridPainter implements MapStagePainter {
     @Override
-    public void render(MapContext ctx, Set<Long> visibleRegions) {
+    public void draw(MapContext ctx, Set<Long> visibleRegions) {
         if (!Settings.mapGrid) return;
 
         drawGrid(PIXELS_PER_CANVAS_CHUNK, 0xFF5b5b5b, ctx);

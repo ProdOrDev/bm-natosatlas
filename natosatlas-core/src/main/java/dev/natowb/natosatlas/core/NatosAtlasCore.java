@@ -10,6 +10,7 @@ import dev.natowb.natosatlas.core.io.NAPaths;
 import dev.natowb.natosatlas.core.texture.TextureProvider;
 import dev.natowb.natosatlas.core.waypoint.Waypoints;
 import dev.natowb.natosatlas.core.access.WorldAccess;
+import jdk.jpackage.internal.Log;
 
 
 public class NatosAtlasCore {
@@ -46,14 +47,13 @@ public class NatosAtlasCore {
 
         instance = this;
         this.platform = platform;
-
+        LogUtil.setLoggingLevel(LogUtil.LogLevel.INFO);
         NAPaths.updateBasePaths(platform.getMinecraftDirectory());
         Settings.load();
     }
 
 
     public void onTick() {
-
         if (!WorldAccess.get().exists() && running) {
             running = false;
             onLeave();
